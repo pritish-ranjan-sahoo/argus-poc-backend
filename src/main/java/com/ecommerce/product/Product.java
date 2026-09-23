@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -18,10 +19,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Table(name="products")
-class Product{
+public class Product{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID productId;
     @Size(min=3,max=50,message="Name must be between 3 and 50 characters")
     @Column(nullable=false)
     private String name;
@@ -29,16 +30,16 @@ class Product{
     private String description;
     @Column(nullable=false)
     @Min(value=0,message="Price cant be negative")
-    private BigDecimal priceperunit;
+    private BigDecimal pricePerUnit;
     @Column(nullable=false)
     @Min(value=0,message="Stock cant be negative")
     private Long stock;
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private CategoryType categoryType;
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="seller_id",nullable=false)
     private AppUser seller;

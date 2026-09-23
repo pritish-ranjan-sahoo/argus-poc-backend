@@ -12,10 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-//    final ProductService productService;
-//    @GetMapping
-//    public ResponseEntity<List<ProductResponseDto>> findAllProducts(){
-//    }
+    final ProductService productService;
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> findAllProducts(){
+        return ResponseEntity.ok(productService.findAllProducts());
+    }
 //    @GetMapping
 //    public ResponseEntity<ProductResponseDto> findProductById(){
 //

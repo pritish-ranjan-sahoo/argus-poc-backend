@@ -1,5 +1,5 @@
 package com.ecommerce.product;
-public enum Category {
+public enum CategoryType {
     FASHION_APPAREL("Fashion & Apparel"),
     ELECTRONICS_TECHNOLOGY("Electronics & Technology"),
     HOME_LIVING("Home & Living"),
@@ -7,6 +7,6 @@ public enum Category {
     SPORTS_HOBBIES_LEISURE("Sports, Hobbies & Leisure"),
     ESSENTIALS_FOOD_GROCERY("Essentials, Food & Grocery");
 
-    Category(String s) {
+    CategoryType(String s) {
     }
 }
