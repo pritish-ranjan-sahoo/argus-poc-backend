@@ -42,4 +42,16 @@ public class GlobalErrorHandling {
         ErrorLog apiError = new ErrorLog("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorLog> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ErrorLog apiError = new ErrorLog(ex.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorLog> handleInsufficientStockException(InsufficientStockException ex) {
+        ErrorLog apiError = new ErrorLog(ex.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
 }
