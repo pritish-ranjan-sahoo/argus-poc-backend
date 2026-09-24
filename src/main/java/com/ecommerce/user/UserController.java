@@ -4,6 +4,7 @@ import com.ecommerce.common.dto.UpdateRoleRequestDTO;
 import com.ecommerce.common.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-user/{id}")
     @Operation(summary = "Get user by the User ID", description = "Get user by the User ID provided as path parameter")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String id) {
         UserResponseDTO data = userService.findById(id);
@@ -41,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("/{role}")
+    @GetMapping("/get-all/{role}")
     @Operation(summary = "Get all users having a specific role", description = "Get all users having a specific role")
     public ResponseEntity<Page<UserResponseDTO>> getUsersByRole(
             @PathVariable String role,
@@ -57,7 +58,6 @@ public class UserController {
     @GetMapping("/get-active")
     @Operation(summary = "Get active users", description = "Get all users having active account state")
     public ResponseEntity<Page<UserResponseDTO>> getActiveUsers(
-            @PathVariable String role,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
             @RequestParam(defaultValue = "username") String attribute
@@ -76,7 +76,7 @@ public class UserController {
 
     @PatchMapping("/change-role")
     @Operation(summary = "Change user role", description = "Promote or Demote User by the user ID")
-    public ResponseEntity<UserResponseDTO> changeRole(UpdateRoleRequestDTO request) {
+    public ResponseEntity<UserResponseDTO> changeRole(@Valid @RequestBody UpdateRoleRequestDTO request) {
         UserResponseDTO data = userService.updateUserRole(request);
         return ResponseEntity.ok(data);
     }
