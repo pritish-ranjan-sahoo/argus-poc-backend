@@ -1,15 +1,11 @@
-
 package com.ecommerce.common.dto;
 import com.ecommerce.product.CategoryType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -17,7 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponseDto {
-
     private UUID productId;
     private String name;
     private String description;

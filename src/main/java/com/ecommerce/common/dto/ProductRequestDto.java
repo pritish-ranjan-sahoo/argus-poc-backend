@@ -23,7 +23,7 @@ public class ProductRequestDto {
     private String description;
 
     @NotNull(message = "Price per unit is required")
-    @DecimalMin(value = "0.1", message = "Price must be greater than or equal to 0.01")
+    @DecimalMin(value = "0.1", message = "Price must be greater than or equal to 0.1")
     private BigDecimal pricePerUnit;
 
     @NotNull(message = "Stock quantity is required")
@@ -32,7 +32,7 @@ public class ProductRequestDto {
 
     @NotNull(message = "Category type is required")
     private CategoryType categoryType;
-
+//remove sellerid when real appuser attached
     @NotNull(message = "Seller ID is required")
     private UUID sellerId;
 

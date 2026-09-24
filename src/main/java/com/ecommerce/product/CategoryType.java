@@ -1,12 +1,9 @@
 package com.ecommerce.product;
 public enum CategoryType {
-    FASHION_APPAREL("Fashion & Apparel"),
-    ELECTRONICS_TECHNOLOGY("Electronics & Technology"),
-    HOME_LIVING("Home & Living"),
-    HEALTH_BEAUTY_PERSONAL_CARE("Health, Beauty & Personal Care"),
-    SPORTS_HOBBIES_LEISURE("Sports, Hobbies & Leisure"),
-    ESSENTIALS_FOOD_GROCERY("Essentials, Food & Grocery");
-
-    CategoryType(String s) {
-    }
+    FASHION_APPAREL,
+    ELECTRONICS_TECHNOLOGY,
+    HOME_LIVING,
+    HEALTH_BEAUTY_PERSONAL_CARE,
+    SPORTS_HOBBIES_LEISURE,
+    ESSENTIALS_FOOD_GROCERY;
 }

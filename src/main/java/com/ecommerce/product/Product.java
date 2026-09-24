@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -26,7 +25,7 @@ public class Product{
     @Size(min=3,max=50,message="Name must be between 3 and 50 characters")
     @Column(nullable=false)
     private String name;
-    @Size(min=3,max=50,message="Description must be between 3 and 50 characters")
+    @Size(min=3,max=1000,message="Description must be between 3 and 1000 characters")
     private String description;
     @Column(nullable=false)
     @Min(value=0,message="Price cant be negative")
