@@ -15,9 +15,6 @@ public class ProductService {
 
     public List<ProductResponseDto> findAllProducts(){
         List<Product> products= productRepository.findAll();
-        for(Product product:products){
-            System.out.println(product.getProductId());
-        }
          return  products.stream().map(this::toResponse).toList();
     }
 
