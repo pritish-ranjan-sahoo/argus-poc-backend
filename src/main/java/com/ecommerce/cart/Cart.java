@@ -1,5 +1,6 @@
 package com.ecommerce.cart;
 
+import com.ecommerce.user.AppUser;
 import jakarta.persistence.*;
 import lombok.Data;
 

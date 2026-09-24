@@ -1,4 +1,4 @@
-package com.ecommerce.cart;
+package com.ecommerce.common.dto;
 
 import lombok.Data;
 

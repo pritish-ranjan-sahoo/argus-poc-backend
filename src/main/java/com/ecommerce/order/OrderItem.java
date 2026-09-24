@@ -3,7 +3,9 @@ package com.ecommerce.order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
+import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +18,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "orderId")
+    @ToString.Exclude
     private Order order;
 
     @ManyToOne
@@ -28,5 +31,5 @@ public class OrderItem {
 
     @Min(value = 0, message = "Price cannot be negative")
     @Column(nullable = false)
-    private Double price;
+    private BigDecimal price;
 }

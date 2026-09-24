@@ -1,4 +1,4 @@
-package com.ecommerce.user.address;
+package com.ecommerce.address;
 
 import com.ecommerce.user.RoleType;
 import jakarta.persistence.*;

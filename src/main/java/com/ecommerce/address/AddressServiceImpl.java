@@ -1,4 +1,4 @@
-package com.ecommerce.user.address;
+package com.ecommerce.address;
 
 
 import lombok.RequiredArgsConstructor;

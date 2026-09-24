@@ -1,5 +1,7 @@
 package com.ecommerce.order;
 
+import com.ecommerce.user.AppUser;
+import com.ecommerce.address.Address;
 import jakarta.persistence.*;
 import lombok.Data;
 
