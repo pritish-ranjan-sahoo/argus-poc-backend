@@ -1,6 +1,6 @@
 package com.ecommerce.common.util;
 
-import com.ecommerce.common.error.RoleNotFound;
+import com.ecommerce.common.error.RoleNotFoundException;
 import com.ecommerce.user.RoleType;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class AuthUtil {
         } else if(role.equals("ADMIN")) {
             return RoleType.ADMIN;
         } else {
-            throw new RoleNotFound("Received invalid role type: "+ role);
+            throw new RoleNotFoundException("Received invalid role type: "+ role);
         }
     }
 }

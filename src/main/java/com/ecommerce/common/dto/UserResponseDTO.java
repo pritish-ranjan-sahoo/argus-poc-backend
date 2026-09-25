@@ -2,12 +2,14 @@ package com.ecommerce.common.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class UserResponseDTO {
-    String id;
+    UUID id;
     String username;
     String email;
     String password;
