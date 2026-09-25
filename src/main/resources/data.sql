@@ -32,7 +32,7 @@ VALUES
 
     -- Customer 2 (Jane Smith): 3 Addresses (Home, Vacation, Parents)
     (gen_random_uuid(), '456 Oak Avenue', 'Suite 100', 'Industrial Zone Phase 1', 'Los Angeles', 'California', '90001B', true, customer_2_id, CURRENT_TIMESTAMP),
-    (gen_random_uuid(), '777 Ocean Drive', 'Beach House', 'Near Shoreline Boardwalk', 'Miami', 'Florida', '33101A', false, customer_2_id, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), '777 Ocean Drive', 'Beach House', 'Near Shoreline Boardwalk', 'Miami', 'Florida', '33101A', true, customer_2_id, CURRENT_TIMESTAMP),
     (gen_random_uuid(), '888 Maple Lane', 'Subdivision B', 'Near Community Hospital', 'Chicago', 'Illinois', '60601C', false, customer_2_id, CURRENT_TIMESTAMP),
 
     -- Customer 3 (Alex Jones): 2 Addresses (Primary Shipping & Alternate Billing)
