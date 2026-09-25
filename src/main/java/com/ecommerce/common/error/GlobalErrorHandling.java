@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.management.relation.Role;
 import java.nio.file.AccessDeniedException;
 
 
@@ -25,15 +24,21 @@ public class GlobalErrorHandling {
         return new ResponseEntity<>(err,HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(RoleNotFound.class)
-    public ResponseEntity<ErrorLog> handleRoleNotFoundException(RoleNotFound ex) {
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<ErrorLog> handleRoleNotFoundException(RoleNotFoundException ex) {
         ErrorLog apiError = new ErrorLog("Role does not exist: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<ErrorLog> handleUserNotFoundException(UserNotFound ex) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorLog> handleUserNotFoundException(UserNotFoundException ex) {
         ErrorLog apiError = new ErrorLog("User not found: " + ex.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<ErrorLog> handleDataNotFoundException(DataNotFoundException ex) {
+        ErrorLog apiError = new ErrorLog("Data not found: " + ex.getMessage(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
