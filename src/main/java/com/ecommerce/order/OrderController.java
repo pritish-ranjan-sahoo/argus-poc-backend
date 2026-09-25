@@ -4,8 +4,10 @@ import com.ecommerce.common.dto.OrderResponseDto;
 import com.ecommerce.common.dto.UpdateOrderStatusRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +27,10 @@ public class OrderController {
 
     @GetMapping
     @Operation(summary = "Get all orders", description = "Retrieves a paginated list of all the orders in the system")
-    public ResponseEntity<Page<OrderResponseDto>> getAllOrders(@PageableDefault(size = 20, sort = "orderId", direction = Sort.Direction.ASC)Pageable pageable) {
+    public ResponseEntity<Page<OrderResponseDto>> getAllOrders(@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "20") int size,
+                                                               @RequestParam(defaultValue = "orderId") String attribute) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(attribute).ascending());
         Page<OrderResponseDto> orders = orderService.getAllOrders(pageable);
         return ResponseEntity.ok(orders);
     }
@@ -39,14 +44,18 @@ public class OrderController {
 
     @GetMapping("/customer/{customerId}")
     @Operation(summary = "Get orders by customer id", description = "Retrieves a paginated list of all orders placed by a specific customer")
-    public ResponseEntity<Page<OrderResponseDto>> getOrdersByCustomerId(@PathVariable UUID customerId, @PageableDefault(size = 20, sort = "orderId", direction = Sort.Direction.ASC)Pageable pageable) {
+    public ResponseEntity<Page<OrderResponseDto>> getOrdersByCustomerId(@PathVariable UUID customerId,
+                                                                        @RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "20") int size,
+                                                                        @RequestParam(defaultValue = "orderId") String attribute) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(attribute).ascending());
         Page<OrderResponseDto> orders = orderService.getOrdersByCustomerId(customerId, pageable);
         return ResponseEntity.ok(orders);
     }
 
     @PatchMapping("/{orderId}/status")
     @Operation(summary = "Update order status", description = "Updates the status of an order ")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable UUID orderId, @RequestBody UpdateOrderStatusRequestDto request) {
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderStatusRequestDto request) {
         OrderResponseDto order = orderService.updateOrderStatus(orderId, request);
         return ResponseEntity.ok(order);
     }
