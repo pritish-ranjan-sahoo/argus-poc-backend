@@ -9,15 +9,17 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    final ProductRepository productRepository;
-    final ModelMapper modelMapper;
+    private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
     //    connect real repo
-    final AppUserRepos appUserRepos;
+    private final AppUserRepos appUserRepos;
 
     public Page<ProductResponseDto> findAllProducts(Pageable pageable){
         Page<Product> products= productRepository.findAll(pageable);
@@ -59,6 +61,7 @@ public class ProductService {
 
     public Page<ProductResponseDto> findProductsBySellerId(String id,Pageable pageable){
         UUID uuid = UUID.fromString(id);
+        AppUser seller=appUserRepos.findById(uuid).orElseThrow(()->new ResourceNotFoundException("Seller not found"));
         Page<Product> products= productRepository.findBySellerId(uuid,pageable);
         return  products.map(this::toResponse);
     }
@@ -74,6 +77,23 @@ public class ProductService {
         }
     }
 
+    public ProductResponseDto updateProductStock(String id, Long stock) {
+        UUID productUuid = UUID.fromString(id);
+        Product existingProduct = productRepository.findById(productUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
+        existingProduct.setStock(stock);
+        Product updatedProduct = productRepository.save(existingProduct);
+        return toResponse(updatedProduct);
+    }
+
+    public ProductResponseDto updateProductPrice(String id, BigDecimal price) {
+        UUID productUuid = UUID.fromString(id);
+        Product existingProduct = productRepository.findById(productUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
+        existingProduct.setPricePerUnit(price);
+        Product updatedProduct = productRepository.save(existingProduct);
+        return toResponse(updatedProduct);
+    }
     //helper methods
     private ProductResponseDto toResponse(Product product){
         return modelMapper.map(product, ProductResponseDto.class);

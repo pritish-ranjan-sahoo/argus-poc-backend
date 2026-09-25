@@ -18,6 +18,12 @@ public class GlobalErrorHandling {
         return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorLog> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorLog apiError = new ErrorLog("Illegal ArgumentException", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(DuplicateRequestException.class)
     public ResponseEntity<ErrorLog> handleDuplicateRequestException(DuplicateRequestException ex){
         ErrorLog err = new ErrorLog("User already exists: "+ex.getMessage(),HttpStatus.BAD_REQUEST);

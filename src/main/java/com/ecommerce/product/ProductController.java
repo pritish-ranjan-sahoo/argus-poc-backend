@@ -3,12 +3,17 @@ package com.ecommerce.product;
 import com.ecommerce.common.dto.ProductRequestDto;
 import com.ecommerce.common.dto.ProductResponseDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/products")
@@ -31,7 +36,16 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable("id") String id,@Valid @RequestBody ProductRequestDto req){
         return ResponseEntity.ok(productService.updateProduct(id,req));
-
+    }
+    @PatchMapping("/{id}/stock")
+    public ResponseEntity<ProductResponseDto> updateProductStock(@PathVariable("id") String id,    @NotNull(message = "Stock quantity is required")
+    @Min(value = 0, message = "Stock cannot be negative") @RequestBody Long stock){
+        return ResponseEntity.ok(productService.updateProductStock(id,stock));
+    }
+    @PatchMapping("/{id}/price")
+    public ResponseEntity<ProductResponseDto> updateProductStockPrice(@PathVariable("id") String id,     @NotNull(message = "Price per unit is required")
+    @DecimalMin(value = "0.1", message = "Price must be greater than or equal to 0.1") @RequestBody BigDecimal price){
+        return ResponseEntity.ok(productService.updateProductPrice(id,price));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable("id") String id){
