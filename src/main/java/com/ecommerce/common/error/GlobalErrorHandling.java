@@ -18,6 +18,12 @@ public class GlobalErrorHandling {
         return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorLog> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorLog apiError = new ErrorLog("Illegal ArgumentException", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(DuplicateRequestException.class)
     public ResponseEntity<ErrorLog> handleDuplicateRequestException(DuplicateRequestException ex){
         ErrorLog err = new ErrorLog("User already exists: "+ex.getMessage(),HttpStatus.BAD_REQUEST);
@@ -47,10 +53,10 @@ public class GlobalErrorHandling {
         ErrorLog apiError = new ErrorLog("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+  
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorLog> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        ErrorLog apiError = new ErrorLog(ex.getMessage(), HttpStatus.NOT_FOUND);
+        ErrorLog apiError = new ErrorLog("Resource not found: " + ex.getMessage(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
