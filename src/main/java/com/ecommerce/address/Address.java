@@ -1,5 +1,6 @@
-package com.ecommerce.user.address;
+package com.ecommerce.address;
 
+import com.ecommerce.user.AppUser;
 import com.ecommerce.user.RoleType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -21,7 +22,7 @@ import java.util.UUID;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID addressId;
 
     @Column(nullable = false)
     @Size(min = 3, max = 100, message = "Address line 1 must be between {min} and {max} characters")
@@ -42,10 +43,13 @@ public class Address {
     private String state;
 
     @Column(nullable = false, length = 6)
-    private String zip_code;
+    private String zipCode;
 
     @Column(nullable = false)
     private boolean isActive;
+
+    @Column(nullable = false)
+    private UUID customerId;
 
     @CreationTimestamp
     @Column(updatable = false)

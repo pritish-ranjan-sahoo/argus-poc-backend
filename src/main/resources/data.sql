@@ -1,11 +1,46 @@
-INSERT INTO app_user (id, username, email, password, role, is_active, created_at) VALUES ('a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d'::uuid, 'tech_store_hub', 'seller.electronics@ecommerce.com', 'short_pass_123', 'SELLER', true, CURRENT_TIMESTAMP);
-INSERT INTO app_user (id, username, email, password, role, is_active, created_at) VALUES ('fedcba98-7654-3210-fedc-ba9876543210'::uuid, 'urban_style_co', 'seller.fashion@ecommerce.com', 'short_pass_123', 'SELLER', true, CURRENT_TIMESTAMP);
+-- 1. Clean existing records safely (Prevents crashes if tables are empty or fresh)
+TRUNCATE TABLE address, app_user RESTART IDENTITY CASCADE^^
 
+-- 2. Execute block using inner semicolons safely
+DO $$
+DECLARE
+admin_id UUID := gen_random_uuid();
+    customer_1_id UUID := gen_random_uuid();
+    customer_2_id UUID := gen_random_uuid();
+    customer_3_id UUID := gen_random_uuid();
+    customer_4_id UUID := gen_random_uuid();
+BEGIN
 
-INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, product_image_url, seller_id, created_at, updated_at) VALUES ('e7c276a6-f28e-49b2-a400-8b17b6a1829e'::uuid, 'Wireless Noise-Canceling Headphones', 'Premium over-ear wireless headphones with active noise cancellation.', 299.99, 50, 'ELECTRONICS_TECHNOLOGY', 'https://unsplash.com', 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d'::uuid, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, product_image_url, seller_id, created_at, updated_at) VALUES ('8f4b321a-90ef-4c12-bd76-1c4b892a00bf'::uuid, 'Mechanical Gaming Keyboard', 'RGB backlit mechanical keyboard with tactile blue switches.', 89.50, 120, 'ELECTRONICS_TECHNOLOGY', 'https://unsplash.com', 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d'::uuid, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, product_image_url, seller_id, created_at, updated_at) VALUES ('3d9c7162-421a-4c28-98e6-7bfa00c192d1'::uuid, 'Classic Leather Jacket', 'Timeless black genuine leather jacket with asymmetric zip closure.', 149.00, 35, 'FASHION_APPAREL', 'https://unsplash.com', 'fedcba98-7654-3210-fedc-ba9876543210'::uuid, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, product_image_url, seller_id, created_at, updated_at) VALUES ('fa163278-83bf-4d1a-9654-2b7e192a83cf'::uuid, 'Ergonomic Mesh Office Chair', 'High-back desk chair with adjustable lumbar support.', 189.99, 15, 'HOME_LIVING', 'https://unsplash.com', 'fedcba98-7654-3210-fedc-ba9876543210'::uuid, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, product_image_url, seller_id, created_at, updated_at) VALUES ('bc287311-61cf-41ab-85fa-ff7a213bc01a'::uuid, 'Hydrating Vitamin C Serum', 'Advanced brightening serum with hyaluronic acid.', 24.50, 200, 'HEALTH_BEAUTY_PERSONAL_CARE', 'https://unsplash.com', 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d'::uuid, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, product_image_url, seller_id, created_at, updated_at) VALUES ('4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d'::uuid, 'Adjustable Dumbbells Set', 'All-in-one steel adjustable dumbbells pair varying from 5 to 52.5 lbs.', 349.99, 8, 'SPORTS_HOBBIES_LEISURE', 'https://unsplash.com', 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d'::uuid, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, product_image_url, seller_id, created_at, updated_at) VALUES ('d8c7b6a5-e4d3-c2b1-a0f9-e8d7c6b5a4f3'::uuid, 'Organic Raw Almonds (1kg)', 'Premium quality unsalted raw almonds.', 18.00, 0, 'ESSENTIALS_FOOD_GROCERY', 'https://unsplash.com', 'fedcba98-7654-3210-fedc-ba9876543210'::uuid, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    -- 3. Insert Dummy AppUsers
+INSERT INTO app_user (id, username, email, password, role, is_active, created_at)
+VALUES
+    (admin_id, 'admin_user', 'admin@ecommerce.com', 'superSecretPwd123', 'ADMIN', true, CURRENT_TIMESTAMP),
+    (customer_1_id, 'john_doe', 'john.doe@example.com', 'securePass2026', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+    (customer_2_id, 'jane_smith', 'jane.smith@example.com', 'smithPassword99', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+    (customer_3_id, 'alex_jones', 'alex.j@example.com', 'alexSecure777', 'CUSTOMER', true, CURRENT_TIMESTAMP),
+    (customer_4_id, 'emily_clark', 'emily.c@example.com', 'emilyPassWord55', 'CUSTOMER', false, CURRENT_TIMESTAMP);
+
+-- 4. Insert Addresses mapping accurately to the generated customer UUIDs
+INSERT INTO address (address_id, line_1, line_2, line_3, city, state, zip_code, is_active, customer_id, created_at)
+VALUES
+    -- Admin corporate address
+    (gen_random_uuid(), '789 Headquarters Blvd', 'Floor 12', 'Corporate Business District', 'Austin', 'Texas', '73301C', true, admin_id, CURRENT_TIMESTAMP),
+
+    -- Customer 1 (John Doe): 2 Addresses (Home & Work)
+    (gen_random_uuid(), '123 Main Street', 'Apartment 4B', 'Near Central Park', 'New York', 'New York', '10001A', true, customer_1_id, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), '555 Corporate Plaza', 'Suite 900', 'Tech Park District', 'New York', 'New York', '10022B', false, customer_1_id, CURRENT_TIMESTAMP),
+
+    -- Customer 2 (Jane Smith): 3 Addresses (Home, Vacation, Parents)
+    (gen_random_uuid(), '456 Oak Avenue', 'Suite 100', 'Industrial Zone Phase 1', 'Los Angeles', 'California', '90001B', true, customer_2_id, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), '777 Ocean Drive', 'Beach House', 'Near Shoreline Boardwalk', 'Miami', 'Florida', '33101A', true, customer_2_id, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), '888 Maple Lane', 'Subdivision B', 'Near Community Hospital', 'Chicago', 'Illinois', '60601C', false, customer_2_id, CURRENT_TIMESTAMP),
+
+    -- Customer 3 (Alex Jones): 2 Addresses (Primary Shipping & Alternate Billing)
+    (gen_random_uuid(), '101 Pine Road', 'Block G', 'Green Valley Residences', 'Seattle', 'Washington', '98101X', true, customer_3_id, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), '202 Cedar Street', 'PO Box 450', 'Main Postal Depot Box', 'Seattle', 'Washington', '98105Y', false, customer_3_id, CURRENT_TIMESTAMP),
+
+    -- Customer 4 (Emily Clark): 1 Address (Inactive User Account)
+    (gen_random_uuid(), '303 Elm Boulevard', 'Apartment 12', 'West End Residential Area', 'Denver', 'Colorado', '80201Z', true, customer_4_id, CURRENT_TIMESTAMP);
+
+END $$;
+^^
