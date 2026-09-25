@@ -47,9 +47,7 @@ public class ProductService {
         existingProduct.setStock(req.getStock());
         existingProduct.setCategoryType(req.getCategoryType());
         existingProduct.setProductImageUrl(req.getProductImageUrl());
-
-        Product updatedProduct = productRepository.save(existingProduct);
-        return toResponse(updatedProduct);
+        return toResponse(productRepository.save(existingProduct));
     }
 
     public void deleteProduct(String id){
@@ -61,9 +59,8 @@ public class ProductService {
 
     public Page<ProductResponseDto> findProductsBySellerId(String id,Pageable pageable){
         UUID uuid = UUID.fromString(id);
-        AppUser seller=appUserRepos.findById(uuid).orElseThrow(()->new ResourceNotFoundException("Seller not found"));
         Page<Product> products= productRepository.findBySellerId(uuid,pageable);
-        return  products.map(this::toResponse);
+        return products.map(this::toResponse);
     }
 
     public Page<ProductResponseDto> findProductsByCategory(String category,Pageable pageable) {
@@ -82,8 +79,7 @@ public class ProductService {
         Product existingProduct = productRepository.findById(productUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
         existingProduct.setStock(stock);
-        Product updatedProduct = productRepository.save(existingProduct);
-        return toResponse(updatedProduct);
+        return toResponse(productRepository.save(existingProduct));
     }
 
     public ProductResponseDto updateProductPrice(String id, BigDecimal price) {
@@ -91,8 +87,7 @@ public class ProductService {
         Product existingProduct = productRepository.findById(productUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
         existingProduct.setPricePerUnit(price);
-        Product updatedProduct = productRepository.save(existingProduct);
-        return toResponse(updatedProduct);
+        return toResponse(productRepository.save(existingProduct));
     }
     //helper methods
     private ProductResponseDto toResponse(Product product){
