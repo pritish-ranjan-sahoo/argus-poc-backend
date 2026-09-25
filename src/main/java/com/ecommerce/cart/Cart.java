@@ -1,6 +1,8 @@
 package com.ecommerce.cart;
 
+import com.ecommerce.user.AppUser;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.*;
@@ -15,6 +17,7 @@ public class Cart {
 
     @OneToOne
     @JoinColumn(name = "userId", nullable = false, unique = true)
+    @NotNull(message = "Cart must be associated with a user")
     private AppUser user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
