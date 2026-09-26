@@ -2,14 +2,16 @@ package com.ecommerce.product;
 
 import com.ecommerce.common.dto.ProductRequestDto;
 import com.ecommerce.common.dto.ProductResponseDto;
+import com.ecommerce.common.dto.UserResponseDTO;
 import com.ecommerce.common.error.ResourceNotFoundException;
+import com.ecommerce.common.util.AuthUtil;
 import com.ecommerce.user.AppUser;
+import com.ecommerce.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -19,7 +21,9 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     //    connect real repo
-    private final AppUserRepos appUserRepos;
+    private final UserService userService;
+    private final AuthUtil authUtil;
+
 
     public Page<ProductResponseDto> findAllProducts(Pageable pageable){
         Page<Product> products= productRepository.findAll(pageable);
@@ -94,15 +98,22 @@ public class ProductService {
         return modelMapper.map(product, ProductResponseDto.class);
     }
     private Product toProduct(ProductRequestDto req) {
-        AppUser seller = appUserRepos.findById(req.getSellerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with ID: " + req.getSellerId()));
+        String uuid=req.getSellerId().toString();
+        UserResponseDTO seller = userService.findById(uuid);
+        AppUser user = AppUser.builder()
+                .username(seller.getUsername())
+                .email(seller.getEmail())
+                .password(seller.getPassword())
+                .role(authUtil.getRole(seller.getRole()))
+                .isActive(true)
+                .build();
         return Product.builder()
                 .name(req.getName())
                 .description(req.getDescription())
                 .pricePerUnit(req.getPricePerUnit())
                 .stock(req.getStock())
                 .categoryType(req.getCategoryType())
-                .seller(seller)
+                .seller(user)
                 .productImageUrl(req.getProductImageUrl())
                 .build();
     }
