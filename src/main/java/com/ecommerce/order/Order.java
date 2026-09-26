@@ -6,11 +6,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "orders")
 public class Order {
 
@@ -19,12 +23,14 @@ public class Order {
     private UUID orderId;
 
     @ManyToOne
-    @JoinColumn(name = "customerId", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     @NotNull(message = "Order must belong to a customer")
+    @ToString.Exclude
     private AppUser customer;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     @NotEmpty(message = "An order must contain atleast one item")
+    @ToString.Exclude
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
