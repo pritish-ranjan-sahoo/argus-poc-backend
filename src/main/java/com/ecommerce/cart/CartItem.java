@@ -1,15 +1,19 @@
 package com.ecommerce.cart;
 
+import com.ecommerce.product.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class CartItem {
 
     @Id
@@ -17,13 +21,13 @@ public class CartItem {
     private UUID cartItemId;
 
     @ManyToOne
-    @JoinColumn(name = "cartId", nullable = false)
+    @JoinColumn(name = "cart_id", nullable = false)
     @NotNull(message = "Cart item must belong to a cart")
     @ToString.Exclude
     private Cart cart;
 
     @ManyToOne
-    @JoinColumn(name = "productId", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Cart item must reference a valid product")
     private Product product;
 

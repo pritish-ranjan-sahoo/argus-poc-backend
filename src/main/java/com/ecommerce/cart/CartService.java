@@ -5,6 +5,8 @@ import com.ecommerce.common.error.InsufficientStockException;
 import com.ecommerce.common.error.ResourceNotFoundException;
 import com.ecommerce.order.Order;
 import com.ecommerce.order.OrderItem;
+import com.ecommerce.product.Product;
+import com.ecommerce.product.ProductRepository;
 import com.ecommerce.user.AppUser;
 import com.ecommerce.user.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -33,7 +35,7 @@ public class CartService {
     @PostConstruct
     private void configureMappings() {
         modelMapper.typeMap(Cart.class, CartResponseDto.class).addMappings(mapper -> {
-            mapper.map(src -> src.getUser().getUserId(), CartResponseDto::setCustomerId);
+            mapper.map(src -> src.getUser().getId(), CartResponseDto::setCustomerId);
         });
 
         modelMapper.typeMap(CartItem.class, CartItemResponseDto.class).addMappings(mapper -> {
@@ -44,7 +46,10 @@ public class CartService {
 
     @Transactional
     public CartResponseDto getCartByCustomerId(UUID customerId) {
-        Cart cart = cartRepository.findByUser_UserId(customerId)
+        AppUser user = userRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Cart cart = cartRepository.findByUser_Id(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for customer id: " + customerId));
 
         return modelMapper.map(cart, CartResponseDto.class);
@@ -53,7 +58,7 @@ public class CartService {
     @Transactional
     public CartResponseDto addProductToCart(UUID customerId, CartItemRequestDto request) {
 
-        Cart cart = cartRepository.findByUser_UserId(customerId).orElseGet(() -> createNewCart(customerId));
+        Cart cart = cartRepository.findByUser_Id(customerId).orElseGet(() -> createNewCart(customerId));
 
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
@@ -97,7 +102,7 @@ public class CartService {
     @Transactional
     public CartResponseDto removeProductFromCart(UUID customerId, UUID productId) {
 
-        Cart cart = cartRepository.findByUser_UserId(customerId)
+        Cart cart = cartRepository.findByUser_Id(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for customer id: " + customerId));
 
         CartItem itemToRemove = cart.getCartItems().stream()
@@ -114,7 +119,7 @@ public class CartService {
 
     @Transactional
     public void deleteCart(UUID customerId) {
-        Cart cart = cartRepository.findByUser_UserId(customerId)
+        Cart cart = cartRepository.findByUser_Id(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for customer id: " + customerId));
 
         cartRepository.delete(cart);
@@ -122,7 +127,7 @@ public class CartService {
 
     @Transactional
     public CartResponseDto updateCartQuantity(UUID customerId, UUID productId, UpdateCartItemRequestDto request) {
-        Cart cart = cartRepository.findByUser_UserId(customerId)
+        Cart cart = cartRepository.findByUser_Id(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for customer id: " + customerId));
 
         CartItem itemToUpdate = cart.getCartItems().stream()

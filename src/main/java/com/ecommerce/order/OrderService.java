@@ -4,6 +4,7 @@ import com.ecommerce.common.dto.OrderItemResponseDto;
 import com.ecommerce.common.dto.OrderResponseDto;
 import com.ecommerce.common.dto.UpdateOrderStatusRequestDto;
 import com.ecommerce.common.error.ResourceNotFoundException;
+import com.ecommerce.product.ProductRepository;
 import com.ecommerce.user.AppUser;
 import com.ecommerce.user.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -27,24 +28,53 @@ public class OrderService {
     private UserRepository userRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private OrderItemRepository orderItemRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
+//    @PostConstruct
+//    private void configureMappings() {
+//        modelMapper.typeMap(Order.class, OrderResponseDto.class).addMappings(mapper -> {
+//            mapper.map(src -> src.getCustomer().getId(), OrderResponseDto::setCustomerId);
+//            mapper.map(src -> src.getCustomer().getUsername(), OrderResponseDto::setCustomerUsername);
+//            mapper.map(src -> src.getAddress().getAddressId(), OrderResponseDto::setAddressId);
+//        });
+//
+//        modelMapper.typeMap(OrderItem.class, OrderItemResponseDto.class).addMappings(mapper -> {
+//            mapper.map(src -> src.getProduct().getProductId(), OrderItemResponseDto::setProductId);
+//            mapper.map(src -> src.getProduct().getName(), OrderItemResponseDto::setProductName);
+//        });
+//    }
+
+
     @PostConstruct
     private void configureMappings() {
-        modelMapper.typeMap(Order.class, OrderResponseDto.class).addMappings(mapper -> {
-            mapper.map(src -> src.getCustomer().getUserId(), OrderResponseDto::setCustomerId);
-            mapper.map(src -> src.getCustomer().getUsername(), OrderResponseDto::setCustomerUsername);
-            mapper.map(src -> src.getAddress().getAddressId(), OrderResponseDto::setAddressId);
-        });
 
-        modelMapper.typeMap(OrderItem.class, OrderItemResponseDto.class).addMappings(mapper -> {
-            mapper.map(src -> src.getProduct().getProductId(), OrderItemResponseDto::setProductId);
-            mapper.map(src -> src.getProduct().getName(), OrderItemResponseDto::setProductName);
-        });
+        // Must be set before any createTypeMap() call, since ambiguity is
+        // checked during implicit-mapping construction, not in addMappings()
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
+        if (modelMapper.getTypeMap(Order.class, OrderResponseDto.class) == null) {
+            modelMapper.createTypeMap(Order.class, OrderResponseDto.class).addMappings(mapper -> {
+                mapper.map(src -> src.getCustomer().getId(), OrderResponseDto::setCustomerId);
+                mapper.map(src -> src.getCustomer().getUsername(), OrderResponseDto::setCustomerUsername);
+                mapper.map(src -> src.getAddress().getAddressId(), OrderResponseDto::setAddressId);
+            });
+        }
+
+        if (modelMapper.getTypeMap(OrderItem.class, OrderItemResponseDto.class) == null) {
+            modelMapper.createTypeMap(OrderItem.class, OrderItemResponseDto.class).addMappings(mapper -> {
+                mapper.map(src -> src.getProduct().getProductId(), OrderItemResponseDto::setProductId);
+                mapper.map(src -> src.getProduct().getName(), OrderItemResponseDto::setProductName);
+            });
+        }
     }
+
+
 
     @Transactional
     public Page<OrderResponseDto> getAllOrders(Pageable pageable) {
@@ -64,7 +94,7 @@ public class OrderService {
         AppUser user = userRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Page<Order> orders = orderRepository.findByCustomer_UserId(customerId, pageable);
+        Page<Order> orders = orderRepository.findByCustomer_Id(customerId, pageable);
 
         if(orders.isEmpty()) {
             throw new ResourceNotFoundException("Order not found for customer with customer id: " + customerId);
