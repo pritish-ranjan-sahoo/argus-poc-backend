@@ -25,6 +25,7 @@ public class AppConfig {
         modelMapper.typeMap(Address.class, AddressResponseDTO.class)
                 .addMappings(mapper -> mapper.using(addressStringConverter)
                         .map(src -> src, AddressResponseDTO::setFullAddress));
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
         return modelMapper;
     }

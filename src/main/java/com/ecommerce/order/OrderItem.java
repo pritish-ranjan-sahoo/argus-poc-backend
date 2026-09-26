@@ -1,5 +1,6 @@
 package com.ecommerce.order;
 
+import com.ecommerce.product.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
