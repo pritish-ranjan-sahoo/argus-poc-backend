@@ -46,6 +46,9 @@ public class CartService {
 
     @Transactional
     public CartResponseDto getCartByCustomerId(UUID customerId) {
+        AppUser user = userRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         Cart cart = cartRepository.findByUser_Id(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for customer id: " + customerId));
 
