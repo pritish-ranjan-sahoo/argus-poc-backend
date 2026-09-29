@@ -58,12 +58,13 @@ public class ProductService {
         UUID productUuid = UUID.fromString(id);
         Product existingProduct = productRepository.findById(productUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
-        productRepository.delete(existingProduct);
+        existingProduct.setStock(0l);
+        productRepository.save(existingProduct);
     }
 
     public Page<ProductResponseDto> findProductsBySellerId(String id,Pageable pageable){
         UUID uuid = UUID.fromString(id);
-        Page<Product> products= productRepository.findBySellerId(uuid,pageable);
+        Page<Product> products= productRepository.findBySellerId(uuid,pageable).orElseThrow(()->new ResourceNotFoundException("Products not found"));
         return products.map(this::toResponse);
     }
 
