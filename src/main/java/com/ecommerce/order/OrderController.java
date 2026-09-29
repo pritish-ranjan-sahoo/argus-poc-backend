@@ -1,5 +1,6 @@
 package com.ecommerce.order;
 
+import com.ecommerce.common.dto.OrderRequestDto;
 import com.ecommerce.common.dto.OrderResponseDto;
 import com.ecommerce.common.dto.UpdateOrderStatusRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +34,13 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(attribute).ascending());
         Page<OrderResponseDto> orders = orderService.getAllOrders(pageable);
         return ResponseEntity.ok(orders);
+    }
+
+    @PostMapping("/customer/{customerId}")
+    @Operation(summary = "Place an order", description = "Customer can place a new order from their existing cart")
+    public ResponseEntity<OrderResponseDto> createNewOrder(@PathVariable UUID customerId, @Valid @RequestBody OrderRequestDto request) {
+        OrderResponseDto order = orderService.createNewOrder(customerId, request);
+        return ResponseEntity.ok(order);
     }
 
     @GetMapping("/{orderId}")
