@@ -27,7 +27,7 @@ public class ProductService {
 
     public Page<ProductResponseDto> findAllProducts(Pageable pageable){
         Page<Product> products= productRepository.findAll(pageable);
-         return  products.map(this::toResponse);
+        return  products.map(this::toResponse);
     }
 
     public ProductResponseDto findProductById(String id){
@@ -100,14 +100,7 @@ public class ProductService {
     }
     private Product toProduct(ProductRequestDto req) {
         String uuid=req.getSellerId().toString();
-        UserResponseDTO seller = userService.findById(uuid);
-        AppUser user = AppUser.builder()
-                .username(seller.getUsername())
-                .email(seller.getEmail())
-                .password(seller.getPassword())
-                .role(authUtil.getRole(seller.getRole()))
-                .isActive(true)
-                .build();
+        AppUser user = userService.findUserById(uuid);
         return Product.builder()
                 .name(req.getName())
                 .description(req.getDescription())

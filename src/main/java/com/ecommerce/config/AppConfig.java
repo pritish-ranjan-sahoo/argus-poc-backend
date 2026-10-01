@@ -1,7 +1,9 @@
 package com.ecommerce.config;
 
 import com.ecommerce.address.Address;
+import com.ecommerce.cart.CartItem;
 import com.ecommerce.common.dto.AddressResponseDTO;
+import com.ecommerce.common.dto.CartItemResponseDto;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,12 @@ public class AppConfig {
                         .map(src -> src, AddressResponseDTO::setFullAddress));
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
+
+        modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
+                .addMappings(m -> {
+                    m.map(src -> src.getProduct().getPricePerUnit(),
+                            CartItemResponseDto::setPricePerUnit);
+                });
         return modelMapper;
     }
 

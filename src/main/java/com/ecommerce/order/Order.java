@@ -28,7 +28,7 @@ public class Order {
     @ToString.Exclude
     private AppUser customer;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @NotEmpty(message = "An order must contain atleast one item")
     @ToString.Exclude
     private Set<OrderItem> orderItems = new HashSet<>();
