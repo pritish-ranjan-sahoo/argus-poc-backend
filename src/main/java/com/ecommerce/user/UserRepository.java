@@ -1,5 +1,8 @@
 package com.ecommerce.user;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +19,6 @@ public interface UserRepository extends JpaRepository<AppUser, UUID> {
     Page<AppUser> findAll(Pageable pageable);
     Page<AppUser> findByRole(RoleType role, Pageable pageable);
     Page<AppUser> findByIsActive(boolean activeOrNot, Pageable pageable);
+    boolean existsByUsernameAndIdNot(String username, UUID uuid);
+    boolean existsByEmailAndIdNot(String email, UUID uuid);
 }

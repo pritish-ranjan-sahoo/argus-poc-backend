@@ -1,5 +1,6 @@
 package com.ecommerce.user;
 
+import com.ecommerce.common.dto.UpdateProfileRequestDTO;
 import com.ecommerce.common.dto.UpdateRoleRequestDTO;
 import com.ecommerce.common.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +36,9 @@ public class UserController {
     public ResponseEntity<Page<UserResponseDTO>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            @RequestParam(defaultValue = "username") String attribute
+            @RequestParam(defaultValue = "username") String sort
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(attribute).ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
         Page<UserResponseDTO> data = userService.getAllUsers(pageable);
         return ResponseEntity.ok(data);
     }
@@ -48,9 +49,9 @@ public class UserController {
             @PathVariable String role,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            @RequestParam(defaultValue = "username") String attribute
+            @RequestParam(defaultValue = "username") String sort
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(attribute).ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
         Page<UserResponseDTO> data = userService.getUsersByRole(role,pageable);
         return ResponseEntity.ok(data);
     }
@@ -60,9 +61,9 @@ public class UserController {
     public ResponseEntity<Page<UserResponseDTO>> getActiveUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            @RequestParam(defaultValue = "username") String attribute
+            @RequestParam(defaultValue = "username") String sort
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(attribute).ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
         Page<UserResponseDTO> data = userService.getActiveUsers(pageable);
         return ResponseEntity.ok(data);
     }
@@ -79,5 +80,13 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> changeRole(@Valid @RequestBody UpdateRoleRequestDTO request) {
         UserResponseDTO data = userService.updateUserRole(request);
         return ResponseEntity.ok(data);
+    }
+
+    @PatchMapping("/{id}/profile")
+    @Operation(summary = "Update profile", description = "Update username and email only")
+    public ResponseEntity<UserResponseDTO> updateProfile(
+            @PathVariable String id,
+            @Valid @RequestBody UpdateProfileRequestDTO request) {
+        return ResponseEntity.ok(userService.updateProfile(id, request));
     }
 }

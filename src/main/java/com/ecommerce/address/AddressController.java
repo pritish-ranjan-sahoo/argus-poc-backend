@@ -26,7 +26,7 @@ public class AddressController {
     private final AddressService addressService;
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get address by the User ID", description = "Get address by the address ID provided as path parameter")
+    @Operation(summary = "Get address by the Address ID", description = "Get address by the address ID provided as path parameter")
     public ResponseEntity<AddressResponseDTO> getAddressById(@PathVariable String id){
         AddressResponseDTO response = addressService.getAddressById(id);
         return ResponseEntity.ok(response);

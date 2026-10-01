@@ -12,6 +12,5 @@ public class UserResponseDTO {
     UUID id;
     String username;
     String email;
-    String password;
     String role;
 }
