@@ -5,12 +5,10 @@ import com.ecommerce.address.AddressRepository;
 import com.ecommerce.cart.Cart;
 import com.ecommerce.cart.CartItem;
 import com.ecommerce.cart.CartRepository;
-import com.ecommerce.common.dto.OrderItemResponseDto;
-import com.ecommerce.common.dto.OrderRequestDto;
-import com.ecommerce.common.dto.OrderResponseDto;
-import com.ecommerce.common.dto.UpdateOrderStatusRequestDto;
+import com.ecommerce.common.dto.*;
 import com.ecommerce.common.error.InsufficientStockException;
 import com.ecommerce.common.error.ResourceNotFoundException;
+import com.ecommerce.product.CategoryType;
 import com.ecommerce.product.Product;
 import com.ecommerce.product.ProductRepository;
 import com.ecommerce.user.AppUser;
@@ -24,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -194,5 +193,56 @@ public class OrderService {
         Long unitsSold = orderItemRepository.getTotalUnitsSoldByProductId(productId);
 
         return Map.of("Units Sold", unitsSold);
+    }
+
+    @Transactional
+    public Map<String, Double> getTotalSales() {
+        Double totalSales = orderItemRepository.getTotalSales();
+        return Map.of("Total Sales: ", totalSales);
+    }
+
+    @Transactional
+    public ProductResponseDto getMostSoldProduct() {
+        UUID productId = orderItemRepository.getMostSoldProduct()
+                .orElseThrow(() -> new ResourceNotFoundException("No orders are there, so can't find most sold product"));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+
+        return modelMapper.map(product, ProductResponseDto.class);
+    }
+
+    @Transactional
+    public Map<CategoryType, Double> getTotalSalesByCategory() {
+        List<CategorySalesProjection> result = orderItemRepository.getTotalSalesByCategory();
+
+        return result.stream().collect(Collectors.toMap(
+                        CategorySalesProjection::getCategory,
+                        CategorySalesProjection::getTotalSales));
+    }
+
+    @Transactional
+    public Map<CategoryType, List<ProductResponseDto>> topProductByCategory() {
+        Map<CategoryType, List<ProductResponseDto>> result = new HashMap<>();
+
+        for (CategoryType category : CategoryType.values()) {
+            List<ProductSalesByCategoryProjection> sales = orderItemRepository.topProductByCategory(category);
+
+            if(sales.isEmpty()) {
+                continue;
+            }
+
+            Long maxQuantity = sales.get(0).getTotalQuantity();
+
+            List<ProductResponseDto> topProducts = sales.stream()
+                    .filter(s -> s.getTotalQuantity().equals(maxQuantity))
+                    .map(s -> productRepository.findById(s.getProductId())
+                            .orElseThrow(() -> new ResourceNotFoundException("Product not found")))
+                    .map(product -> modelMapper.map(product, ProductResponseDto.class))
+                    .collect(Collectors.toList());
+
+            result.put(category, topProducts);
+        }
+        return result;
     }
 }
