@@ -2,7 +2,9 @@ package com.ecommerce.order;
 
 import com.ecommerce.common.dto.OrderRequestDto;
 import com.ecommerce.common.dto.OrderResponseDto;
+import com.ecommerce.common.dto.ProductResponseDto;
 import com.ecommerce.common.dto.UpdateOrderStatusRequestDto;
+import com.ecommerce.product.CategoryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -72,6 +75,30 @@ public class OrderController {
     @Operation(summary = "Get total units sold for a product", description = "Returns the aggregated count of total quantities sold for a given product across all orders")
     public ResponseEntity<Map<String, Long>> getUnitsSoldForProduct(@PathVariable UUID productId) {
         Map<String, Long> response = orderService.getUnitsSoldForProduct(productId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/sales/total")
+    public ResponseEntity<Map<String, Double>> getTotalSales(){
+        Map<String, Double> response = orderService.getTotalSales();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/products/most-sold")
+    public ResponseEntity<ProductResponseDto> getMostSoldProduct() {
+        ProductResponseDto product = orderService.getMostSoldProduct();
+        return ResponseEntity.ok(product);
+    }
+
+    @GetMapping("/sales/category")
+    public ResponseEntity<Map<CategoryType, Double>> getTotalSalesByCategory() {
+        Map<CategoryType, Double> response = orderService.getTotalSalesByCategory();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("products/most-sold/category")
+    public ResponseEntity<Map<CategoryType, List<ProductResponseDto>>> topProductByCategory() {
+        Map<CategoryType, List<ProductResponseDto>> response = orderService.topProductByCategory();
         return ResponseEntity.ok(response);
     }
 }
