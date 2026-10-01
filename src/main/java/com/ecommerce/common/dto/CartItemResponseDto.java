@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -18,4 +19,6 @@ public class CartItemResponseDto {
     private String productName;
 
     private Integer quantity;
+
+    private BigDecimal pricePerUnit;
 }
