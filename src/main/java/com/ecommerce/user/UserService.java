@@ -2,6 +2,7 @@ package com.ecommerce.user;
 
 
 import com.ecommerce.common.dto.SignUpRequestDTO;
+import com.ecommerce.common.dto.UpdateProfileRequestDTO;
 import com.ecommerce.common.dto.UpdateRoleRequestDTO;
 import com.ecommerce.common.dto.UserResponseDTO;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ public interface UserService {
     Page<UserResponseDTO> getActiveUsers(Pageable pageable);
     UserResponseDTO updateUserRole(UpdateRoleRequestDTO data);
     UserResponseDTO toggleUserActivityStatus(String id);
+    public UserResponseDTO updateProfile(String id, UpdateProfileRequestDTO data);
     boolean isAdmin(String id);
     boolean isSeller(String id);
     boolean isCustomer(String id);

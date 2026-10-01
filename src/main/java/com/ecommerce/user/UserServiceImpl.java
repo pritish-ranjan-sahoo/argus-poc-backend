@@ -1,8 +1,10 @@
 package com.ecommerce.user;
 
 import com.ecommerce.common.dto.SignUpRequestDTO;
+import com.ecommerce.common.dto.UpdateProfileRequestDTO;
 import com.ecommerce.common.dto.UpdateRoleRequestDTO;
 import com.ecommerce.common.dto.UserResponseDTO;
+import com.ecommerce.common.error.DuplicateResourceException;
 import com.ecommerce.common.error.UserNotFoundException;
 import com.ecommerce.common.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
@@ -109,6 +111,24 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO findByCredential(String credential) {
         AppUser user = userRepository.findByUsernameOrEmail(credential, credential)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: "+credential));
+        return modelMapper.map(user, UserResponseDTO.class);
+    }
+
+    // UserService interface + UserServiceImpl
+    @Override
+    public UserResponseDTO updateProfile(String id, UpdateProfileRequestDTO data) {
+        UUID uuid = UUID.fromString(id);
+        AppUser user = userRepository.findById(uuid)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+        if (userRepository.existsByUsernameAndIdNot(data.getUsername(), uuid)) {
+            throw new DuplicateResourceException("Username is already taken");
+        }
+        if (userRepository.existsByEmailAndIdNot(data.getEmail(), uuid)) {
+            throw new DuplicateResourceException("Email is already registered");
+        }
+        user.setUsername(data.getUsername());
+        user.setEmail(data.getEmail());
+        userRepository.save(user);
         return modelMapper.map(user, UserResponseDTO.class);
     }
 

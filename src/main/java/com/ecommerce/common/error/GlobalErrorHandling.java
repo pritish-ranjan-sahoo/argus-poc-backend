@@ -60,6 +60,12 @@ public class GlobalErrorHandling {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorLog> handleDuplicateResourceException(DuplicateResourceException ex) {
+        ErrorLog apiError = new ErrorLog("Duplicate resource found: " + ex.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ErrorLog> handleInsufficientStockException(InsufficientStockException ex) {
         ErrorLog apiError = new ErrorLog(ex.getMessage(), HttpStatus.CONFLICT);
