@@ -13,6 +13,7 @@ import java.util.List;
 public interface UserService {
     UserResponseDTO register(SignUpRequestDTO data);
     UserResponseDTO findById(String id);
+    AppUser findUserById(String id);
     UserResponseDTO findByCredential(String credential);
     Page<UserResponseDTO> getAllUsers(Pageable pageable);
     Page<UserResponseDTO> getUsersByRole(String role, Pageable pageable);

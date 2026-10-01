@@ -108,6 +108,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public AppUser findUserById(String id) {
+        UUID uuid = UUID.fromString(id);
+        AppUser user = userRepository.findById(uuid)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: "+id));
+        return user;
+    }
+
+    @Override
     public UserResponseDTO findByCredential(String credential) {
         AppUser user = userRepository.findByUsernameOrEmail(credential, credential)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: "+credential));
