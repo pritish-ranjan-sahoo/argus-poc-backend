@@ -1,18 +1,18 @@
 package com.ecommerce.user;
 
-import com.ecommerce.common.dto.SignUpRequestDTO;
-import com.ecommerce.common.dto.UpdateProfileRequestDTO;
-import com.ecommerce.common.dto.UpdateRoleRequestDTO;
-import com.ecommerce.common.dto.UserResponseDTO;
+import com.ecommerce.common.dto.*;
 import com.ecommerce.common.error.DuplicateResourceException;
 import com.ecommerce.common.error.UserNotFoundException;
 import com.ecommerce.common.util.AuthUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
 @Service
@@ -22,13 +22,14 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final AuthUtil authUtil;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDTO register(SignUpRequestDTO data) {
         AppUser user = AppUser.builder()
                 .username(data.getUsername())
-                .email(data.getEmail())
-                .password(data.getPassword())
+                .email(data.getEmail().toLowerCase())
+                .password(passwordEncoder.encode(data.getPassword()))
                 .role(authUtil.getRole(data.getRole()))
                 .isActive(true)
                 .build();
