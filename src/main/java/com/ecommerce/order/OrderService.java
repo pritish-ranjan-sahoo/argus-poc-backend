@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -195,6 +196,7 @@ public class OrderService {
         return Map.of("Units Sold", unitsSold);
     }
 
+//    Analytics APIs Services
     @Transactional
     public Map<String, Double> getTotalSales() {
         Double totalSales = orderItemRepository.getTotalSales();
@@ -244,5 +246,16 @@ public class OrderService {
             result.put(category, topProducts);
         }
         return result;
+    }
+
+    @Transactional
+    public List<UserResponseDTO> getTopSellers() {
+        List<UUID> topSellers = orderItemRepository.getTopSellers(PageRequest.of(0, 3));
+
+        return topSellers.stream()
+                .map(sellerId -> userRepository.findById(sellerId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id: " + sellerId)))
+                .map(seller -> modelMapper.map(seller, UserResponseDTO.class))
+                .collect(Collectors.toList());
     }
 }

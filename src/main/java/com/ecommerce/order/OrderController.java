@@ -1,9 +1,6 @@
 package com.ecommerce.order;
 
-import com.ecommerce.common.dto.OrderRequestDto;
-import com.ecommerce.common.dto.OrderResponseDto;
-import com.ecommerce.common.dto.ProductResponseDto;
-import com.ecommerce.common.dto.UpdateOrderStatusRequestDto;
+import com.ecommerce.common.dto.*;
 import com.ecommerce.product.CategoryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -79,26 +76,37 @@ public class OrderController {
     }
 
     @GetMapping("/sales/total")
+    @Operation(summary = "Get total sales/revenue", description = "Calculates lifetime gross sales value across all completed orders")
     public ResponseEntity<Map<String, Double>> getTotalSales(){
         Map<String, Double> response = orderService.getTotalSales();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/products/most-sold")
+    @Operation(summary = "Get overall most sold product", description = "Retrieves details of the most sold product across the entire platform")
     public ResponseEntity<ProductResponseDto> getMostSoldProduct() {
         ProductResponseDto product = orderService.getMostSoldProduct();
         return ResponseEntity.ok(product);
     }
 
     @GetMapping("/sales/category")
+    @Operation(summary = "Get sales revenue by category", description = "Breaks down total revenue generated grouped by product category")
     public ResponseEntity<Map<CategoryType, Double>> getTotalSalesByCategory() {
         Map<CategoryType, Double> response = orderService.getTotalSalesByCategory();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("products/most-sold/category")
+    @Operation(summary = "Get top products for each category", description = "Retrieves details of most sold product in each category")
     public ResponseEntity<Map<CategoryType, List<ProductResponseDto>>> topProductByCategory() {
         Map<CategoryType, List<ProductResponseDto>> response = orderService.topProductByCategory();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("topsellers")
+    @Operation(summary = "Get top 3 sellers", description = "Retrieves details of top 3 sellers across the platform")
+    public ResponseEntity<List<UserResponseDTO>> getTopSellers() {
+        List<UserResponseDTO> response = orderService.getTopSellers();
         return ResponseEntity.ok(response);
     }
 }

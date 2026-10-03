@@ -3,6 +3,7 @@ package com.ecommerce.order;
 import com.ecommerce.common.dto.CategorySalesProjection;
 import com.ecommerce.common.dto.ProductSalesByCategoryProjection;
 import com.ecommerce.product.CategoryType;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +30,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 
     @Query("SELECT oi.product.productId AS productId, SUM(oi.quantity) AS totalQuantity FROM OrderItem oi WHERE oi.product.categoryType = :category GROUP BY oi.product.productId ORDER BY SUM(oi.quantity) DESC")
     List<ProductSalesByCategoryProjection> topProductByCategory(@Param("category") CategoryType category);
+
+    @Query("SELECT oi.product.seller.id FROM OrderItem oi GROUP BY oi.product.seller.id ORDER BY SUM(oi.price * oi.quantity) DESC")
+    List<UUID> getTopSellers(Pageable pageable);
 }
