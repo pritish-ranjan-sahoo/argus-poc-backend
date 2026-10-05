@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService{
                 .role(authUtil.getRole(data.getRole()))
                 .isActive(true)
                 .build();
+
         userRepository.save(user);
         return modelMapper.map(user, UserResponseDTO.class);
     }
@@ -123,7 +124,6 @@ public class UserServiceImpl implements UserService{
         return modelMapper.map(user, UserResponseDTO.class);
     }
 
-    // UserService interface + UserServiceImpl
     @Override
     public UserResponseDTO updateProfile(String id, UpdateProfileRequestDTO data) {
         UUID uuid = UUID.fromString(id);

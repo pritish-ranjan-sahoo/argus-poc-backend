@@ -23,16 +23,15 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<AuthResponseDTO> signUp(@RequestBody @Valid SignUpRequestDTO newUser){
-        UserResponseDTO createdUser = authService.register(newUser);
-
-        return new ResponseEntity<AuthResponseDTO>(HttpStatus.CREATED);
+        AuthResponseDTO createdUser = authService.register(newUser);
+        return new ResponseEntity<AuthResponseDTO>(createdUser, HttpStatus.CREATED);
     }
 
 
     @PostMapping("/log-in")
-    public ResponseEntity<AuthResponseDTO> logIn(@RequestBody @Valid SignUpRequestDTO newUser){
-        UserResponseDTO createdUser = authService.register(newUser);
-        return new ResponseEntity<AuthResponseDTO>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<AuthResponseDTO> logIn(@RequestBody @Valid LogInRequestDTO user){
+        AuthResponseDTO loggedInUser = authService.login(user);
+        return new ResponseEntity<AuthResponseDTO>(loggedInUser, HttpStatus.CREATED);
     }
 
 }
