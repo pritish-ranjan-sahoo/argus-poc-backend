@@ -31,7 +31,7 @@ public class AppUser {
     private String email;
 
     @Column(nullable = false)
-    @Size(min = 8, max = 50, message = "Password must be between {min} and {max} characters")
+    @Size(min = 8, message = "Password must be 8 characters long")
     private String password;
 
     @Enumerated(EnumType.STRING)
