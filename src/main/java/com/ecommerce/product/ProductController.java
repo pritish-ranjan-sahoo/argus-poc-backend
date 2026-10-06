@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -30,29 +31,35 @@ public class ProductController {
         return ResponseEntity.ok(productService.findProductById(id));
     }
     @PostMapping
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ProductResponseDto> addProduct(@Valid @RequestBody ProductRequestDto req){
         return ResponseEntity.ok(productService.addProduct(req));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable("id") String id,@Valid @RequestBody ProductRequestDto req){
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable("id") String id, @Valid @RequestBody ProductRequestDto req){
         return ResponseEntity.ok(productService.updateProduct(id,req));
     }
     @PatchMapping("/{id}/stock")
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ProductResponseDto> updateProductStock(@PathVariable("id") String id,    @NotNull(message = "Stock quantity is required")
     @Min(value = 0, message = "Stock cannot be negative") @RequestBody Long stock){
         return ResponseEntity.ok(productService.updateProductStock(id,stock));
     }
     @PatchMapping("/{id}/price")
-    public ResponseEntity<ProductResponseDto> updateProductStockPrice(@PathVariable("id") String id,     @NotNull(message = "Price per unit is required")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<ProductResponseDto> updateProductStockPrice(@PathVariable("id") String id, @NotNull(message = "Price per unit is required")
     @DecimalMin(value = "0.1", message = "Price must be greater than or equal to 0.1") @RequestBody BigDecimal price){
         return ResponseEntity.ok(productService.updateProductPrice(id,price));
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     public ResponseEntity<Void> deleteProduct(@PathVariable("id") String id){
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/seller/{sellerId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     public ResponseEntity<Page<ProductResponseDto>> findProductsBySellerId(@PathVariable("sellerId") String sellerId,@PageableDefault(page=0,size=10,sort="pricePerUnit") Pageable pageable){
         return ResponseEntity.ok(productService.findProductsBySellerId(sellerId,pageable));
     }
