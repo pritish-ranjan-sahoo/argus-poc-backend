@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,6 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/get-all")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get All Users", description = "Get all users chunk by chunk providing filtering factors in request parameters")
     public ResponseEntity<Page<UserResponseDTO>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -44,6 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/get-all/{role}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get all users having a specific role", description = "Get all users having a specific role")
     public ResponseEntity<Page<UserResponseDTO>> getUsersByRole(
             @PathVariable String role,
@@ -57,6 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/get-active")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get active users", description = "Get all users having active account state")
     public ResponseEntity<Page<UserResponseDTO>> getActiveUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -69,6 +73,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Block user by ID", description = "Soft delete any user by using the userId")
     public ResponseEntity<UserResponseDTO> blockUser(@PathVariable String id) {
         UserResponseDTO data = userService.toggleUserActivityStatus(id);
@@ -76,6 +81,7 @@ public class UserController {
     }
 
     @PatchMapping("/change-role")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Change user role", description = "Promote or Demote User by the user ID")
     public ResponseEntity<UserResponseDTO> changeRole(@Valid @RequestBody UpdateRoleRequestDTO request) {
         UserResponseDTO data = userService.updateUserRole(request);
