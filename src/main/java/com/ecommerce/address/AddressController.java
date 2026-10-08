@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class AddressController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get address by the Address ID", description = "Get address by the address ID provided as path parameter")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<AddressResponseDTO> getAddressById(@PathVariable String id){
         AddressResponseDTO response = addressService.getAddressById(id);
         return ResponseEntity.ok(response);
@@ -34,6 +36,7 @@ public class AddressController {
 
     @PostMapping("/add")
     @Operation(summary = "Add address", description = "Add new address by providing the required attributes")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<AddressResponseDTO> createNewAddress(@Valid @RequestBody AddressRequestDTO request){
         AddressResponseDTO response = addressService.addAddress(request);
         return ResponseEntity.ok(response);
@@ -41,6 +44,7 @@ public class AddressController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete address by the address ID", description = "Soft delete address by the given address id")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<AddressResponseDTO> deleteAddressById(@PathVariable String id){
         AddressResponseDTO response = addressService.removeAddress(id);
         return ResponseEntity.ok(response);
@@ -48,6 +52,7 @@ public class AddressController {
 
     @GetMapping("/get-all")
     @Operation(summary = "Get all address", description = "Get all address")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<AddressResponseDTO>> getAllAddress(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
@@ -60,6 +65,7 @@ public class AddressController {
 
     @GetMapping("/get-all/{customerId}")
     @Operation(summary = "Get specific user addresses", description = "Get all active addresses of an user")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<List<AddressResponseDTO>> getAddressByCustomerId( @PathVariable String customerId ) {
         List<AddressResponseDTO> response = addressService.getAddressByCustomerId(customerId);
         return ResponseEntity.ok(response);
