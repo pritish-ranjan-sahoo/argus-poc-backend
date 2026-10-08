@@ -29,11 +29,10 @@ public class AppConfig {
                         .map(src -> src, AddressResponseDTO::setFullAddress));
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-
         modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
-                .addMappings(m -> {
-                    m.map(src -> src.getProduct().getPricePerUnit(),
-                            CartItemResponseDto::setPricePerUnit);
+                .addMappings(mapper -> {
+                    mapper.map(src -> src.getProduct().getPricePerUnit(), CartItemResponseDto::setPricePerUnit);
+                    mapper.map(src -> src.getProduct().getStock(), CartItemResponseDto::setStock);
                 });
         return modelMapper;
     }

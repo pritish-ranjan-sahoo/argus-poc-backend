@@ -21,4 +21,6 @@ public class CartItemResponseDto {
     private Integer quantity;
 
     private BigDecimal pricePerUnit;
+
+    private Long stock;
 }
