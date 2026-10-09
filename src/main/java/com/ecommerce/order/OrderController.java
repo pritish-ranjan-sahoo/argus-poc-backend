@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     @Operation(summary = "Get all orders", description = "Retrieves a paginated list of all the orders in the system")
     public ResponseEntity<Page<OrderResponseDto>> getAllOrders(@RequestParam(defaultValue = "0") int page,
@@ -36,6 +38,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/customer/{customerId}")
     @Operation(summary = "Place an order", description = "Customer can place a new order from their existing cart")
     public ResponseEntity<OrderResponseDto> createNewOrder(@PathVariable UUID customerId, @Valid @RequestBody OrderRequestDto request) {
@@ -43,6 +46,7 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @GetMapping("/{orderId}")
     @Operation(summary = "Get order by order ID", description = "Retrieves the details of a specific order")
     public ResponseEntity<OrderResponseDto> getOrderById(@PathVariable UUID orderId) {
@@ -50,6 +54,7 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     @GetMapping("/customer/{customerId}")
     @Operation(summary = "Get orders by customer id", description = "Retrieves a paginated list of all orders placed by a specific customer")
     public ResponseEntity<Page<OrderResponseDto>> getOrdersByCustomerId(@PathVariable UUID customerId,
@@ -61,6 +66,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{orderId}/status")
     @Operation(summary = "Update order status", description = "Updates the status of an order ")
     public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderStatusRequestDto request) {
@@ -68,6 +74,7 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @GetMapping("/product/{productId}")
     @Operation(summary = "Get total units sold for a product", description = "Returns the aggregated count of total quantities sold for a given product across all orders")
     public ResponseEntity<Map<String, Long>> getUnitsSoldForProduct(@PathVariable UUID productId) {
@@ -75,6 +82,7 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/sales/total")
     @Operation(summary = "Get total sales/revenue", description = "Calculates lifetime gross sales value across all completed orders")
     public ResponseEntity<Map<String, Double>> getTotalSales(){
@@ -82,6 +90,7 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/products/most-sold")
     @Operation(summary = "Get overall most sold product", description = "Retrieves details of the most sold product across the entire platform")
     public ResponseEntity<ProductResponseDto> getMostSoldProduct() {
@@ -89,6 +98,7 @@ public class OrderController {
         return ResponseEntity.ok(product);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/sales/category")
     @Operation(summary = "Get sales revenue by category", description = "Breaks down total revenue generated grouped by product category")
     public ResponseEntity<Map<CategoryType, Double>> getTotalSalesByCategory() {
@@ -96,14 +106,16 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("products/most-sold/category")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/products/most-sold/category")
     @Operation(summary = "Get top products for each category", description = "Retrieves details of most sold product in each category")
     public ResponseEntity<Map<CategoryType, List<ProductResponseDto>>> topProductByCategory() {
         Map<CategoryType, List<ProductResponseDto>> response = orderService.topProductByCategory();
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("topsellers")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/topsellers")
     @Operation(summary = "Get top 3 sellers", description = "Retrieves details of top 3 sellers across the platform")
     public ResponseEntity<List<UserResponseDTO>> getTopSellers() {
         List<UserResponseDTO> response = orderService.getTopSellers();
