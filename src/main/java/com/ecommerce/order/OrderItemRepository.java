@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,4 +34,14 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 
     @Query("SELECT oi.product.seller.id FROM OrderItem oi GROUP BY oi.product.seller.id ORDER BY SUM(oi.price * oi.quantity) DESC")
     List<UUID> getTopSellers(Pageable pageable);
+
+    @Query("""
+           SELECT oi FROM OrderItem oi
+           JOIN FETCH oi.order o
+           JOIN FETCH o.customer
+           JOIN FETCH oi.product p
+           WHERE p.seller.id = :sellerId
+           ORDER BY o.orderId
+           """)
+    List<OrderItem> findAllBySellerId(@Param("sellerId") UUID sellerId);
 }
