@@ -121,4 +121,10 @@ public class OrderController {
         List<UserResponseDTO> response = orderService.getTopSellers();
         return ResponseEntity.ok(response);
     }
+    
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<SellerOrderResponseDto>> getOrdersBySeller(
+            @PathVariable UUID sellerId) {
+        return ResponseEntity.ok(orderService.getOrdersBySeller(sellerId));
+    }
 }

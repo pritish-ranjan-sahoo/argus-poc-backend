@@ -12,6 +12,7 @@ import com.ecommerce.product.CategoryType;
 import com.ecommerce.product.Product;
 import com.ecommerce.product.ProductRepository;
 import com.ecommerce.user.AppUser;
+import com.ecommerce.user.RoleType;
 import com.ecommerce.user.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
@@ -20,8 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -258,4 +261,33 @@ public class OrderService {
                 .map(seller -> modelMapper.map(seller, UserResponseDTO.class))
                 .collect(Collectors.toList());
     }
-}
+
+    public List<SellerOrderResponseDto> getOrdersBySeller(UUID sellerId) {
+        AppUser seller = userRepository.findById(sellerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                         "Seller not found"));
+
+        if (seller.getRole() != RoleType.SELLER) {
+            throw new AccessDeniedException("User is not a seller");
+        }
+
+        return orderItemRepository.findAllBySellerId(sellerId).stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    private SellerOrderResponseDto toDto(OrderItem oi) {
+        Order order = oi.getOrder();
+        return SellerOrderResponseDto.builder()
+                .orderId(order.getOrderId())
+                .status(order.getStatus())
+                .paymentMethod(order.getPaymentMethod())
+                .orderItemId(oi.getOrderItemId())
+                .productId(oi.getProduct().getProductId())
+                .productName(oi.getProduct().getName())
+                .pricePerUnit(oi.getPrice())
+                .units(oi.getQuantity())
+                .lineTotal(oi.getPrice().multiply(BigDecimal.valueOf(oi.getQuantity())))
+                .build();
+    }
+    }
