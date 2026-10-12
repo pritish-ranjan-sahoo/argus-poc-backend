@@ -66,7 +66,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SELLER')")
     @PatchMapping("/{orderId}/status")
     @Operation(summary = "Update order status", description = "Updates the status of an order ")
     public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderStatusRequestDto request) {

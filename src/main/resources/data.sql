@@ -68,12 +68,12 @@ VALUES
 -- 5. Insert Products (seller_id references seller/admin users)
 INSERT INTO products (product_id, name, description, price_per_unit, stock, category_type, created_at, updated_at, seller_id, product_image_url)
 VALUES
-    (product_1_id, 'Wireless Mechanical Keyboard', 'Compact 75% mechanical keyboard with hot-swappable switches', 89.99, 150, 'ELECTRONICS_TECHNOLOGY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://example.com/images/keyboard.jpg'),
-    (product_2_id, 'Noise Cancelling Headphones', 'Over-ear headphones with 30hr battery life and ANC', 149.50, 80, 'ELECTRONICS_TECHNOLOGY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://example.com/images/headphones.jpg'),
-    (product_3_id, 'Organic Cotton T-Shirt', 'Breathable everyday t-shirt, available in multiple colors', 19.99, 300, 'FASHION_APPAREL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://example.com/images/tshirt.jpg'),
-    (product_4_id, 'Stainless Steel Water Bottle', 'Insulated 1L bottle, keeps drinks cold for 24 hours', 24.99, 200, 'HOME_LIVING', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://example.com/images/bottle.jpg'),
-    (product_5_id, 'Vitamin C Face Serum', 'Brightening serum with hyaluronic acid, 30ml bottle', 16.99, 250, 'HEALTH_BEAUTY_PERSONAL_CARE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_id, 'https://example.com/images/serum.jpg'),
-    (product_6_id, 'Organic Basmati Rice 5kg', 'Premium long-grain basmati rice, aged for extra aroma', 12.99, 500, 'ESSENTIALS_FOOD_GROCERY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://example.com/images/rice.jpg');
+    (product_1_id, 'Keyboard', 'Compact 75% mechanical keyboard with hot-swappable switches', 89.99, 150, 'ELECTRONICS_TECHNOLOGY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://rukmini1.flixcart.com/image/1500/1500/kevpwnk0/keyboard/desktop-keyboard/n/s/h/tvs-champ-hd-original-imafvgwswuhnwnu6.jpeg?q=70'),
+    (product_2_id, 'Headphones', 'Over-ear headphones with 30hr battery life and ANC', 149.50, 80, 'ELECTRONICS_TECHNOLOGY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLJ91ZtfSp7WmcF3Xx_oJ4EGnZtyRmfR1qxs5cQ22i_ok4x4fY7If4Vh9r&s=10'),
+    (product_3_id, 'T-Shirt', 'Breathable everyday t-shirt, available in multiple colors', 19.99, 300, 'FASHION_APPAREL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToBSgxJqVVbXNHTnhNsf5e9ogsKhvjrCr_2H8vgopusg&s=10'),
+    (product_4_id, 'Bottle', 'Insulated 1L bottle, keeps drinks cold for 24 hours', 24.99, 200, 'HOME_LIVING', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://images.unsplash.com/photo-1723951174326-2a97221d3b7f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'),
+    (product_5_id, 'Serum', 'Brightening serum with hyaluronic acid, 30ml bottle', 16.99, 250, 'HEALTH_BEAUTY_PERSONAL_CARE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_id, 'https://images.unsplash.com/photo-1723951174326-2a97221d3b7f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'),
+    (product_6_id, 'Rice', 'Premium long-grain basmati rice, aged for extra aroma', 12.99, 500, 'ESSENTIALS_FOOD_GROCERY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, seller_1_id, 'https://aazol.in/cdn/shop/files/Generatedimage1_5.webp?v=1785738068&width=600');
 
 -- 6. Insert Carts (one per active customer)
 INSERT INTO cart (cart_id, user_id)
